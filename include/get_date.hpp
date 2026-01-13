@@ -1,5 +1,5 @@
     #pragma once
-    gm {
+    namespace gm {
     /**
      * @brief function that returns current system date
      * 
