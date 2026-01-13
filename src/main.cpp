@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <limits>
+#include "value_checker.hpp"
 #include "Workout.hpp"
 #include "PushUps.hpp"
 #include "PullUps.hpp"
@@ -37,7 +37,8 @@ int main() {
         std::cout << "Hello!, choose option" << std::endl;
         std::cout << "1. Add training" << std::endl;
         std::cout << "2. Delete last training" << std::endl;
-        std::cout << "3. Exit" << std::endl;
+        std::cout << "3. Show history" << std::endl;
+        std::cout << "4. Exit" << std::endl;
         if (!(std::cin >> main_options)){
             check();
             continue;
@@ -45,10 +46,11 @@ int main() {
         
         switch (main_options) {
             case 1: {
-                date = get_date();
+                date = gm::get_date();
                 std::cout << date << std::endl;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cout << "Enter the training name: " << std::endl;
-                std::cin >> name;
+                getline(std::cin, name);
                 adding = true;
                 save = true;
             
@@ -71,25 +73,25 @@ int main() {
                     switch(sub_options) {
                         case 1:
                             std::cout << "How much reps: " << std::endl;
-                            std::cin >> reps;
+                            reps = gm::good_input<int>();
                             std::cout << "How much sets: " << std::endl;
-                            std::cin >> sets;
+                            sets = gm::good_input<int>();
                             std::cout << "How much weight (kg ): " << std::endl;
-                            std::cin >> weight;
+                            weight = gm::good_input<double>();
                             std::cout << "Comment: " << std::endl;
-                            std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
-                            std::cin >> comment;
+                            
+                            getline(std::cin, comment);
                             training += new gm::PushUps(sets, reps, weight, comment);
                             break;
             
                         case 2:
                             std::cout << "How much reps: " << std::endl;
-                            std::cin >> reps;
+                            reps = gm::good_input<int>();
                             std::cout << "How much sets: " << std::endl;
-                            std::cin >> sets;
+                            sets = gm::good_input<int>();
                             std::cout << "How much weight (kg): " << std::endl;
-                            std::cin >> weight;
-                            std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+                            weight = gm::good_input<double>();
+                            
                             std::cout << "Comment: " << std::endl;
                             getline(std::cin, comment);
                             training += (new gm::PullUps(sets, reps, weight, comment));
@@ -97,12 +99,12 @@ int main() {
 
                         case 3:
                             std::cout << "How much reps: " << std::endl;
-                            std::cin >> reps;
+                            reps = gm::good_input<int>();
                             std::cout << "How much sets: " << std::endl;
-                            std::cin >> sets;
+                            sets = gm::good_input<int>();
                             std::cout << "How much weight (kg): " << std::endl;
-                            std::cin >> weight;
-                            std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+                            weight = gm::good_input<double>();
+                            
                             std::cout << "Comment: " << std::endl;
                             getline(std::cin, comment);
                             training += (new gm::Dips(sets, reps, weight, comment));
@@ -110,34 +112,34 @@ int main() {
 
                         case 4:
                             std::cout << "How much sets: " << std::endl;
-                            std::cin >> sets;
+                            sets = gm::good_input<int>();
                             std::cout << "How much time (s): " << std::endl;
-                            std::cin >> exe_time;
+                            exe_time = gm::good_input<int>();
                             std::cout << "How much weight (kg): " << std::endl;
-                            std::cin >> weight;
-                            std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+                            weight = gm::good_input<double>();
+                            
                             std::cout << "Comment: " << std::endl;
                             getline(std::cin, comment);
                             training += (new gm::Plank(sets, exe_time, weight, comment));
                             break;
 
                         case 5:
+                            
                             std::cout << "Enter name of your exercise: " << std::endl;
-                            std::cin >> name;
+                            getline(std::cin, name);
                             std::cout << "How much reps (0 if exercise is for time): " << std::endl;
-                            std::cin >> reps;
+                            reps = gm::good_input<int>();
                             std::cout << "How much sets: " << std::endl;
-                            std::cin >> sets;
+                            sets = gm::good_input<int>();
                             std::cout << "How much weight (kg): " << std::endl;
-                            std::cin >> weight;
+                            weight = gm::good_input<double>();
                             std::cout << "How much time (0 if exercise is for sets): " << std::endl;
-                            std::cin >> exe_time;
+                            exe_time = gm::good_input<int>();
                             std::cout << "What volume coefficient you want to add: " << std::endl;
-                            std::cin >> volume_coef;
-                            std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
+                            volume_coef = gm::good_input<double>();
+                            
                             std::cout << "For what muscles is this exercise: " << std::endl;
                             getline(std::cin, info);
-                            std::cin.ignore ( std::numeric_limits<std::streamsize>::max(), '\n' );
                             std::cout << "Comment: " << std::endl;
                             getline(std::cin, comment);
                             training += (new gm::Custom(name, info, sets, reps, weight, exe_time, volume_coef, comment));
@@ -173,9 +175,15 @@ int main() {
                 std::cout << "Last training deleted" << std::endl;
                 break;
 
-
-
-            case 3:
+            case 3: 
+                {
+                std::string report = gm::Workout::training_history();
+                std::cout << report << std::endl;
+                
+                 
+                break;
+                }
+            case 4:
                 std::cout << "Leaving aplication..." << std::endl;
                 running = false;
                 break; 
